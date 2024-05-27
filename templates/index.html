@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Downloader</title>
 </head>
 <body>
     <h1>YouTube Downloader</h1>
-    <form action="/" method="post">
-        <label for="youtube_link">YouTube Video Link:</label>
-        <input type="text" id="youtube_link" name="youtube_link" required>
-        <button type="submit">Get Download Links</button>
+    <form method="POST">
+        <label for="video_url">YouTube動画URL:</label>
+        <input type="text" id="video_url" name="video_url" required>
+        <button type="submit">ダウンロードリンクを取得</button>
     </form>
-    {% if video_url %}
-    <h2>Download Links:</h2>
-    <p>MP4: <a href="{{ video_url }}">Download MP4</a></p>
-    <p>MP3: <a href="{{ mp3_url }}">Download MP3</a></p>
+
+    {% if mp4_url %}
+        <a href="{{ mp4_url }}" download>MP4をダウンロード</a><br>
+    {% endif %}
+    {% if mp3_url %}
+        <a href="{{ mp3_url }}" download>MP3をダウンロード</a>
     {% endif %}
 </body>
 </html>
