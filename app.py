@@ -1,31 +1,23 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 import yt_dlp
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        video_url = request.form['video_url']
-
-        ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'noplaylist': True,
-        }
-
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(video_url, download=False)
-            video_format = ydl.get_suitable_formats(info)[0]
-            video_link = video_format['url']
-            audio_link = None
-            for fmt in ydl.get_suitable_formats(info):
-                if fmt['ext'] == 'm4a':
-                    audio_link = fmt['url']
-                    break
-
-        return jsonify({'video_link': video_link, 'audio_link': audio_link})
-
     return render_template('index.html')
+
+@app.route('/download', methods=['POST'])
+def download():
+    if request.method == 'POST':
+        video_link = request.form['video_link']
+        try:
+            with yt_dlp.YoutubeDL() as ydl:
+                info_dict = ydl.extract_info(video_link, download=False)
+                video_url = info_dict['url']
+                return redirect(video_url)
+        except Exception as e:
+            return render_template('index.html', error_message=str(e))
 
 if __name__ == '__main__':
     app.run(debug=True)
