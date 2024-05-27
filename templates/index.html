@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>YouTube Downloader</title>
+    <title>YouTube Converter</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#convert_form').submit(function(event) {
+                event.preventDefault();
+                $.post('/', $(this).serialize(), function(data) {
+                    $('#video_link').attr('href', data.video_link);
+                    $('#audio_link').attr('href', data.audio_link);
+                    $('#results').show();
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <h1>YouTube Downloader</h1>
-    <form method="POST">
-        <label for="video_url">YouTube動画URL:</label>
-        <input type="text" id="video_url" name="video_url" required>
-        <button type="submit">ダウンロードリンクを取得</button>
+    <h1>YouTube Converter</h1>
+    <form id="convert_form" method="POST">
+        <input type="text" name="video_url" placeholder="YouTube動画のURLを入力">
+        <button type="submit">変換</button>
     </form>
 
-    {% if mp4_url %}
-        <a href="{{ mp4_url }}" download>MP4をダウンロード</a><br>
-    {% endif %}
-    {% if mp3_url %}
-        <a href="{{ mp3_url }}" download>MP3をダウンロード</a>
-    {% endif %}
+    <div id="results" style="display: none;">
+        <h2>ダウンロードリンク</h2>
+        <a id="video_link" href="">MP4 (動画)</a><br>
+        <a id="audio_link" href="">MP3 (音声)</a>
+    </div>
 </body>
 </html>
