@@ -1,32 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>YouTube Converter</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#convert_form').submit(function(event) {
-                event.preventDefault();
-                $.post('/', $(this).serialize(), function(data) {
-                    $('#video_link').attr('href', data.video_link);
-                    $('#audio_link').attr('href', data.audio_link);
-                    $('#results').show();
-                });
-            });
-        });
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
 </head>
 <body>
-    <h1>YouTube Converter</h1>
-    <form id="convert_form" method="POST">
-        <input type="text" name="video_url" placeholder="YouTube動画のURLを入力">
-        <button type="submit">変換</button>
+    <h1>YouTube Video Downloader</h1>
+    <form action="/download" method="post">
+        <label for="video_link">Enter YouTube Video Link:</label><br>
+        <input type="text" id="video_link" name="video_link"><br><br>
+        <input type="submit" value="Download">
     </form>
-
-    <div id="results" style="display: none;">
-        <h2>ダウンロードリンク</h2>
-        <a id="video_link" href="">MP4 (動画)</a><br>
-        <a id="audio_link" href="">MP3 (音声)</a>
-    </div>
 </body>
 </html>
