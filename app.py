@@ -15,16 +15,20 @@ def get_direct_link(url, format):
         'quiet': True
     }
     
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-        if format == 'mp3':
-            return info_dict['url']
-        else:
-            formats = info_dict.get('formats', [info_dict])
-            for f in formats:
-                if f.get('ext') == 'mp4':
-                    return f['url']
-            return None
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            if format == 'mp3':
+                return info_dict['url']
+            else:
+                formats = info_dict.get('formats', [info_dict])
+                for f in formats:
+                    if f.get('ext') == 'mp4':
+                        return f['url']
+                return None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 @app.route('/')
 def index():
