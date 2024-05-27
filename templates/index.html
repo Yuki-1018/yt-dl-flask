@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youtube Downloader</title>
+    <title>YouTube Downloader</title>
 </head>
 <body>
-    <h1>Youtube Downloader</h1>
+    <h1>YouTube Downloader</h1>
     <form action="/" method="post">
-        <label for="url">Youtube URL:</label>
-        <input type="text" id="url" name="url" required>
-        <br><br>
-        <label for="format">Format:</label>
-        <select id="format" name="format">
-            <option value="mp4">MP4</option>
-            <option value="mp3">MP3</option>
-        </select>
-        <br><br>
-        <button type="submit">Download</button>
+        <label for="youtube_link">YouTube Video Link:</label>
+        <input type="text" id="youtube_link" name="youtube_link" required>
+        <button type="submit">Get Download Links</button>
     </form>
+    {% if video_url %}
+    <h2>Download Links:</h2>
+    <p>MP4: <a href="{{ video_url }}">Download MP4</a></p>
+    <p>MP3: <a href="{{ mp3_url }}">Download MP3</a></p>
+    {% endif %}
 </body>
 </html>
