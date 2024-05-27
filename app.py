@@ -1,28 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for
 import yt_dlp
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# ダウンロードリンクを取得する関数
-def get_download_links(youtube_link):
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'outtmpl': 'downloads/%(id)s.%(ext)s',
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(youtube_link, download=False)
-        video_url = ydl.prepare_filename(info)
-        mp3_url = video_url.replace('.mp4', '.mp3')
-    return video_url, mp3_url
-
-# ホームページ
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == 'POST':
-        youtube_link = request.form['youtube_link']
-        video_url, mp3_url = get_download_links(youtube_link)
-        return render_template('index.html', video_url=video_url, mp3_url=mp3_url)
-    return render_template('index.html')
+    if request.method == "POST":
+        video_url = request.form["video_url"]
 
-if __name__ == '__main__':
+        ydl_opts = {
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "outtmpl": "%(id)s.%(ext)s",
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(video_url, download=False)
+            video_id = info["id"]
+
+            mp4_url = url_for("download", filename=f"{video_id}.mp4")
+            mp3_url = url_for("download", filename=f"{video_id}.m4a")
+
+            return render_template("index.html", mp4_url=mp4_url, mp3_url=mp3_url)
+
+    return render_template("index.html")
+
+@app.route("/download/<filename>")
+def download(filename):
+    return redirect(url_for("static", filename=filename))
+
+if __name__ == "__main__":
     app.run(debug=True)
