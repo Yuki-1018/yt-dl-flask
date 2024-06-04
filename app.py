@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+# app.py
+from flask import Flask, render_template, request
 import yt_dlp
 
 app = Flask(__name__)
@@ -9,15 +10,19 @@ def index():
 
 @app.route('/download', methods=['POST'])
 def download():
-    if request.method == 'POST':
-        video_link = request.form['video_link']
-        try:
-            with yt_dlp.YoutubeDL() as ydl:
-                info_dict = ydl.extract_info(video_link, download=False)
-                video_url = info_dict['url']
-                return redirect(video_url)
-        except Exception as e:
-            return render_template('index.html', error_message=str(e))
+    url = request.form['url']
+    ydl_opts = {
+        'format': 'bestvideo+bestaudio/best',
+        'outtmpl': '%(id)s.%(ext)s',
+        'quiet': True,
+        'no_warnings': True
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(url, download=False)
+        video_url = ydl.prepare_filename(info_dict)
+        audio_url = video_url.replace('.mp4', '.mp3')
+
+    return render_template('result.html', video_url=video_url, audio_url=audio_url)
 
 if __name__ == '__main__':
     app.run(debug=True)
