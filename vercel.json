@@ -1,4 +1,6 @@
+// vercel.json
 {
+  "version": 2,
   "builds": [
     {
       "src": "app.py",
@@ -8,7 +10,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.py"
+      "dest": "/app.py"
     }
   ]
 }
